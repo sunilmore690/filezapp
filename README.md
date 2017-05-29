@@ -2,7 +2,7 @@
 
 Developed By : [Sunil More](https://www.linkedin.com/in/sunil-more-18961164/)
 
-filesyncftp is FTP user interface & also you can sync local data to ftp server
+filezapp is FTP user interface & also you can sync local data to ftp server
 
   
 # Features!
@@ -31,13 +31,13 @@ https://web-ftp-client.herokuapp.com
 
 ### Installation
 
-web-ftp-client requires [Node.js](https://nodejs.org/) v4+ to run.
+filezapp requires [Node.js](https://nodejs.org/) v4+ to run.
 
 
 
 ```sh
-$ git clone https://github.com/sunilmore690/filesyncftp.git
-$ cd filesyncftp
+$ git clone https://github.com/sunilmore690/filezapp.git
+$ cd filezapp
 $ npm install 
 $ electron .
 ```
