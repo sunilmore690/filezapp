@@ -1,0 +1,145 @@
+tr { cursor: pointer; cursor: hand; }
+#fileselector {
+    margin: 10px; 
+}
+#upload-file-selector {
+    display:none;   
+}
+.margin-correction {
+    margin-right: 10px;   
+}
+body.loading .universal-loader {
+  display: block;
+}
+.universal-loader {
+  display: none;
+  background-size: 100%;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 120px;
+  height: 120px;
+  margin: -50px 0 0 -50px;
+  z-index: 999999;
+  background: url('../images/heart_loader.gif') center center no-repeat;
+  background-size: 70%;
+}
+/* Override Font-Awesome */
+/* Color Added for Clarity */
+.fa-file-text-o:before, 
+.fa-file-txt-o:before {
+    content:"\f0f6";
+    color: #808080;
+}
+.fa-file-word-o:before, 
+.fa-file-doc-o:before, 
+.fa-file-docx-o:before {
+    content:"\f1c2";
+    color: #2277bb;
+}
+.fa-file-excel-o:before, 
+.fa-file-xls-o:before, 
+.fa-file-xlsx-o:before {
+    content:"\f1c3";
+    color: #22bb66;
+}
+.fa-file-powerpoint-o:before, 
+.fa-file-ppt-o:before, 
+.fa-file-pptx-o:before {
+    content:"\f1c4";
+    color: #ff5533;
+}
+.fa-file-photo-o:before, 
+.fa-file-picture-o:before, 
+.fa-file-image-o:before, 
+.fa-file-bmp-o:before, 
+.fa-file-gif-o:before, 
+.fa-file-jpeg-o:before, 
+.fa-file-jpg-o:before, 
+.fa-file-png-o:before {
+    content:"\f1c5";
+    color: #ffaa00;
+}
+.fa-file-archive-o:before, 
+.fa-file-bz2-o:before, 
+.fa-file-dmg-o:before, 
+.fa-file-gz-o:before, 
+.fa-file-gzip-o:before, 
+.fa-file-iso-o:before, 
+.fa-file-rar-o:before, 
+.fa-file-tar-o:before, 
+.fa-file-tgz-o:before, 
+.fa-file-zip-o:before {
+    content:"\f1c6";
+    color: #333355;
+}
+.navbar-right ul{
+  color:'white';
+}
+
+/*.ftpinfo.active{
+    background:'yellow';
+}*/
+.tree, .tree ul {
+    margin:0;
+    padding:0;
+    list-style:none
+}
+.tree ul {
+    margin-left:1em;
+    position:relative
+}
+.tree ul ul {
+    margin-left:.5em
+}
+.tree ul:before {
+    content:"";
+    display:block;
+    width:0;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    border-left:1px solid
+}
+.tree li {
+    margin:0;
+    padding:0 1em;
+    line-height:2em;
+    color:#369;
+    font-weight:700;
+    position:relative
+}
+.tree ul li:before {
+    content:"";
+    display:block;
+    width:10px;
+    height:0;
+    border-top:1px solid;
+    margin-top:-1px;
+    position:absolute;
+    top:1em;
+    left:0
+}
+.tree ul li:last-child:before {
+    background:#fff;
+    height:auto;
+    top:1em;
+    bottom:0
+}
+.indicator {
+    margin-right:5px;
+}
+.tree li a {
+    text-decoration: none;
+    color:#369;
+}
+.tree li button, .tree li button:active, .tree li button:focus {
+    text-decoration: none;
+    color:#369;
+    border:none;
+    background:transparent;
+    margin:0px 0px 0px 0px;
+    padding:0px 0px 0px 0px;
+    outline: 0;
+}

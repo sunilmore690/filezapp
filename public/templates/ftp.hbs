@@ -1,0 +1,111 @@
+`
+<div class="">
+    <div>
+        <ul class="breadcrumb">
+            {{#each dirs}} {{#if @first}}<a href='#' class="path" data-name=''><i class="fa fa-home" ></i> </a>{{/if}} {{#if
+            @last}}
+            <li class="active">{{this}}</li>
+            {{else}}
+            <li><a href="#" data-name='{{this}}' class="path">{{this}}</a></li>
+            {{/if}} {{/each}}
+
+
+
+        </ul>
+    </div>
+    <div style="margin-bottom:20px;">
+        <div class="col-sm-6 col-sm-6" style="padding-left:0px">
+            <button value="" rel='popover' class="btn btn-xs btn-default mkdir"><i class="fa fa-folder-open"></i> Create Directory</button>            &nbsp;&nbsp;
+            <label class="btn btn-default btn-xs btn-default upload" for="upload-file-selector">
+                    {{!--<input id="upload-file-selector" type="file" name='uploadfile' multiple>--}}
+                    <i class="fa fa-upload"></i> upload file
+                </label>
+            <label class='label ' style='color:black'>
+          {{size_info.file}} files and {{size_info.dir}} Folders
+        </label>
+        </div>
+        <div class="col-sm-6 col-xs-12" >
+            <div class="col-sm-4 col-xs-2" style="padding-left:0px"> <button class="btn btn-xs btn-default refresh"><i class="fa fa-refresh"></i> </button></div>
+            <div class="col-sm-8 col-xs-10" style="text-align:right;padding-left:0px;padding-right:0px">
+                <input type='button' class="btn btn-xs action btn-default  disabled" value="Rename"   data-action='rename'/>
+                <button  class="btn btn-xs btn-default download disabled"  ><i class='fa fa-download'></i> Download </a></button>
+                <button class="btn btn-xs btn-default delete disabled" ><i class='fa fa-trash-o'></i> Delete </a></button>
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+
+
+    </div>
+    <br>
+    <br>
+    <div style='overflow-x:scroll;max-height: 600px; width: 100%; margin: 0; overflow-y: auto;'>
+        <table class="table striped " {{#if isMobile}}style='width:800px;' {{/if}} style="">
+            <thead>
+                <th>Name</th>
+                <th>Size</th>
+                <th>Type</th>
+                <th>Last Modified</th>
+                <th>Permissions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each ftpdirlist}}
+                <tr class='ftpinfo' data-type="{{#when type 'eq' 'Directory'}}Directory{{else}} file{{/when}}" data-name='{{name}}'>
+                    <td width=''><span><i class="fa {{#when type 'eq' 'Directory'}} fa-folder {{else}} {{#fileIcon name}} {{/fileIcon}} {{/when}} " aria-hidden="true" {{#when type 'eq' 'Directory'}}style='color:#54b2ef' {{/when}}></i></span>                        &nbsp;
+                        <a class="list" data-type="{{#when type 'eq' 'Directory'}}folder{{else}} file{{/when}}" data-name='{{name}}'>{{name}}</a>
+
+                    </td>
+                    <td>{{#when type 'eq' 'File'}} {{#humanFileSize size}}{{/humanFileSize}}{{/when}}</td>
+                    <td>{{type}}</td>
+
+                    <td width='15%'>{{#formattedDate time}}{{/formattedDate}}</td>
+                    <td>{{perm}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+
+<div class="modal fade rename-modal" role="dialog">
+    <div class="modal-dialog modal-sm" style='top:30%'>
+        <div class="modal-content">
+            <div class="modal-body">
+                <input type='text' class='form-control dirname'>
+                <input type='hidden' class="prevdirname">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button class="btn btn-info rename">Rename</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade dir-modal" role="dialog">
+    <div class="modal-dialog modal-sm" style='top:30%'>
+        <div class="modal-content">
+            <div class="modal-header">
+                Enter your Directory Name
+            </div>
+            <div class="modal-body">
+                <input type='text' class='form-control newdirname'>
+                <input type='hidden' class="prevdirname">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button class="btn btn-info makedir">Save</button>
+
+            </div>
+        </div>
+    </div>
+</div>
