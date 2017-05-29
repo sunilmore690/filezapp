@@ -327,13 +327,15 @@ var walkRemote = function(data, callback) {
     var settings = data;
     var ftp = data.ftp;
     // walk the directory
+    console.log
     ftp.ls(dir, function(err, list) {
       if (err) {
-        sync.log.error('ftp.ls failed.');
+        console.error('ftp.ls failed.');
         return callback(err);
       }
       var i = 0;
       (function next() {
+        console.log('i',i)
         var file = list[i++];
         // exit if all files are processed
         if (!file) { return callback(null, { 'dirs':dirs, 'files':files }); }
@@ -350,6 +352,8 @@ var walkRemote = function(data, callback) {
           // add the directory to the results
           dirs.push(helpers.trimPathRoot(settings.remote, path));
           // concat results from recursive calls
+          // return next();
+         if(path.indexOf('node_modules') >= 0) return next();
           walkRemote({dir:path,ftp:data.ftp,remote:settings.remote}, function(err, res) {
            // recurse & shit
             if(res){
@@ -387,7 +391,8 @@ ftps.walkRemote = function (data, callback) {
   }
   // data.ftp = ftp;
   data.remote = '/'
-  walkRemote({dir:'/cloudconvert/',ftp:ftp,remote:''},function(err,res){
+  data.dir = '/public_html'
+  walkRemote({dir:data.dir,ftp:ftp,remote:''},function(err,res){
     if(err) callback(err)
     else callback(null,res)
   })

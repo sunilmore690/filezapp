@@ -172,31 +172,28 @@ Handlebars.registerHelper('humanFileSize', function (bytes) {
   } while (Math.abs(bytes) >= thresh && u < units.length - 1);
   return bytes.toFixed(1) + ' ' + units[u];
 })
-var makeul = function (hierarchy, classname) {
-  var dirs = Object.keys(hierarchy);
-  var ul = '<ul';
+var makeul = function (hierarchydata, classname) {
+  console.log('hierarchydata',hierarchydata)
+  var ul = '<ul id="tree1"';
   if (classname) {
     ul += ' class="' + classname + '"';
   }
   ul += '>\n';
-  dirs.forEach(function (dir) {
-    var path = hierarchy[dir].path;
-    if (dirs.length == 1 && dirs[0] == 'path') {
-      ul += '<li class="folder">' + dir + '\n';
+ _.each(hierarchydata,function (value, key) {
+    if (Object.keys(hierarchydata[key]).length == 1 && hierarchydata[key].path) {
+      ul += '<li class="folder">' + key + '\n';
       ul += '</li>\n';
     } else {
-      ul += '<li class="folder">' + dir + '\n';
-      ul += makeul(hierarchy[dir]);
+      ul += '<li class="folder">' + key + '\n';
+      ul += makeul(hierarchydata[key]);
       ul += '</li>\n';
     }
-
-
-  });
+  })
   ul += '</ul>\n';
   return ul;
 };
 Handlebars.registerHelper('tree', function (array, classname) {
-  return new Handlebars.SafeString(makeul(array, classname)); // mark as already escaped
+  return new Handlebars.SafeString(makeul(hierarchy(array), classname)); // mark as already escaped
 });
 var BaseModel = Backbone.Model.extend({
 
@@ -510,12 +507,12 @@ var FtpListView = Backbone.View.extend({
           else if (list && list.length == 0) {
             that.render();
           } else {
-           
+
             var length = list.length;
             var obj = list[length - 1];
-            console.log('obj',obj.id);
+            console.log('obj', obj.id);
             that.$el.find('.tabrole' + obj.id).tab('show');
-            that.$el.find('#'+obj.id).addClass('in active');
+            that.$el.find('#' + obj.id).addClass('in active');
           }
           that.$el.find('.mytab' + data.id).remove();
           $('#' + data.id).remove();
@@ -619,6 +616,7 @@ var DirViewModal = Backbone.View.extend({
 
   },
   render: function (data) {
+    console.log('data', data)
     var that = this;
     TemplateManager.get('dirview', function (source) {
       myftp.walkRemote(data, function (err, synclist) {
@@ -633,11 +631,11 @@ var DirViewModal = Backbone.View.extend({
         dirs = dirs.map(function (path) {
           return path.substr(1)
         })
-        var hierarchydirs = hierarchy(dirs)
-        console.log('hierarchydirs', hierarchydirs)
-        var html = template({ isMobile: App.isMobile, dirs: hierarchydirs });
+        // var hierarchydirs = hierarchy(dirs)
+        // console.log('hierarchydirs', hierarchydirs)
+        var html = template({ isMobile: App.isMobile, dirs: dirs });
         that.$el.html(html);
-        that.$el.find('#tree').treed({ openedClass: 'fa fa-folder', closedClass: 'fa fa-folder-open' });
+        that.$el.find('#tree1').treed({ openedClass: 'fa fa-folder', closedClass: 'fa fa-folder-open' });
         that.$el.modal('show');
       })
     }.bind(this))
@@ -727,8 +725,15 @@ var FtpSyncView = Backbone.View.extend({
     return false;
   },
   initialize: function () {
+    var that = this;
     this._modelBinder = new Backbone.ModelBinder();
     this.model = new FtpConnect();
+    this.model.on('change', function () {
+      console.log('attributes', that.model.attributes)
+      if (that.model.get('user') && that.model.get('host') && that.model.get('pass') && that.model.get('port')) {
+        that.$el.find('[name="remote"]').prop("disabled", false)
+      }
+    })
     this.currentTab = 'add';
   },
   render: function () {
