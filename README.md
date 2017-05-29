@@ -1,4 +1,4 @@
-# Desktop FTP Client 
+# Desktop FTP Client & File Syncing to your own Ftp Server
 
 Developed By : [Sunil More](https://www.linkedin.com/in/sunil-more-18961164/)
 
