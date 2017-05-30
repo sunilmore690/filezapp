@@ -218,7 +218,7 @@ var deleteModel = BaseModel.extend({
 
 var FtpView = Backbone.View.extend({
   // el: '.pa',
-  className: 'tab-pane fade ',
+  className: 'tab-pane fade ftpview',
   events: {
     'dblclick .ftpinfo': 'listDirFile',
     'click .path': 'goToPath',
@@ -826,7 +826,9 @@ var HomeView = Backbone.View.extend({
           App.router.currentView.$el.find('.tab-content').append(global.ftpview[data.id].render(function () {
             console.log('render callback');
             // callback();
+            $('.ftpview').removeClass('in active');
             $('#'+data.id).addClass('in active');
+          
           }).el);
         })
 
