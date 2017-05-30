@@ -520,7 +520,7 @@ var FtpListView = Backbone.View.extend({
       })
     }
   },
-  render: function () {
+  render: function (id) {
     var that = this;
     ftplist.getAll(function (err, list) {
       TemplateManager.get('ftp_list', function (template) {
@@ -529,12 +529,13 @@ var FtpListView = Backbone.View.extend({
         var template = Handlebars.compile(template);
         var html = template({ ftplist: list });
         that.$el.html(html);
-        that.postRender(list);
+        that.postRender(list,id);
       })
     })
 
   },
-  postRender: function (list) {
+  postRender: function (list,id) {
+    console.log('id',id)
     var that = this;
     var index = 1;
     async.eachSeries(list, function (ftp, callback) {
@@ -544,8 +545,12 @@ var FtpListView = Backbone.View.extend({
         console.log('render callback');
         callback();
       }).el);
-      if (index == 1) {
+      if(id){
+         $('#' + id).addClass("in active");
+         $('.tabrole'+id).tab('show');
+      }else if (index == 1) {
         $('#' + ftp.id).addClass("in active");
+        $('.tabrole'+ftp.id).tab('show');
       }
       index += 1;
 
@@ -804,19 +809,22 @@ var HomeView = Backbone.View.extend({
       if (err) {
         window.App.flash('Something went wrong', 'error')
       } else {
-        ftplist.add(ftp, function (err) {
-          App.router.currentView.render();
+        ftplist.add(ftp, function (err,data1) {
+          // console.log('data',data1)
+          data = JSON.parse(JSON.stringify(data1))
+          // App.router.currentView.render(data.id);
           that.model.clear();
           // return false;
-          // global.ftpview[ftp.id] = new FtpView({ model: new FtpListModel({ dir: '/', ftp: ftp }), id: ftp.id })
-          // var liel = '<li role="presentation" class="{{#if @first}}active{{/if}} mytab{{id}}"> <a href="#{{id}}" aria-controls="profile" role="tab" data-toggle="tab">{{user}}@{{host}} <button class="close closeTab" type="button" data-id="{{id}}">×</button>&nbsp;&nbsp;</a> </li>';
-          // var template = Handlebars.compile(liel);
-          // template = template({ftp:ftp});
-          // App.router.currentView.$el.find('.nav-tabs').append(template);
-          // App.router.currentView.$el.find('.tab-content').append(global.ftpview[ftp.id].render(function () {
-          //   console.log('render callback');
-          //   // callback();
-          // }).el);
+          global.ftpview[data.id] = new FtpView({ model: new FtpListModel({ dir: '/', ftp: data }), id: data.id })
+          var liel = '<li role="presentation" class="mytab{{id}}"> <a href="#{{id}}" aria-controls="profile" role="tab" data-toggle="tab" class="tabrole{{id}}">{{user}}@{{host}} <button class="close closeTab" type="button" data-id="{{id}}">×</button>&nbsp;&nbsp;</a> </li>';
+          var template = Handlebars.compile(liel);
+          template = template(data);
+          App.router.currentView.$el.find('.nav-tabs').append(template);
+          $('.tabrole'+data.id).tab('show');
+          App.router.currentView.$el.find('.tab-content').append(global.ftpview[data.id].render(function () {
+            console.log('render callback');
+            // callback();
+          }).el);
         })
 
       }

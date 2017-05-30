@@ -3,7 +3,7 @@
 <div style='overflow-x:scroll'>
   <ul class="nav nav-tabs" role="tablist" style='width:2000px'>
   {{#each ftplist}}
-  <li role="presentation" class="{{#if @first}}active{{/if}} mytab{{id}}">
+  <li role="presentation" class="mytab{{id}}">
     <a href="#{{id}}" aria-controls="profile" role="tab" data-toggle="tab" class='tabrole{{id}}'>{{user}}@{{host}} <button class="close closeTab" type="button" data-id='{{id}}'>×</button>&nbsp;&nbsp;</a>
   </li>
   {{/each}}
