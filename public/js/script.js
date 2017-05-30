@@ -815,6 +815,8 @@ var HomeView = Backbone.View.extend({
           // App.router.currentView.render(data.id);
           that.model.clear();
           // return false;
+          App.router.currentView.$el.find('.message').addClass('hide');
+          App.router.currentView.$el.find('.connectionlist').removeClass('hide');
           global.ftpview[data.id] = new FtpView({ model: new FtpListModel({ dir: '/', ftp: data }), id: data.id })
           var liel = '<li role="presentation" class="mytab{{id}}"> <a href="#{{id}}" aria-controls="profile" role="tab" data-toggle="tab" class="tabrole{{id}}">{{user}}@{{host}} <button class="close closeTab" type="button" data-id="{{id}}">×</button>&nbsp;&nbsp;</a> </li>';
           var template = Handlebars.compile(liel);
@@ -824,6 +826,7 @@ var HomeView = Backbone.View.extend({
           App.router.currentView.$el.find('.tab-content').append(global.ftpview[data.id].render(function () {
             console.log('render callback');
             // callback();
+            $('#'+data.id).addClass('in active');
           }).el);
         })
 

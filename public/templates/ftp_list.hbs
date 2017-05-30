@@ -1,6 +1,13 @@
-{{#if ftplist.length}}
-<legend>FTP Connections</legend>
-<div style='overflow-x:scroll'>
+{{#if ftplist.length }}
+  
+{{else}}
+<h3 class="message">No Active FTP Connections</h3>
+{{/if}}
+
+<div class="connectionlist {{#if ftplist.length }}{{else}}hide{{/if}}">
+  <legend>FTP Connections</legend>
+
+<div style='overflow-x:scroll' >
   <ul class="nav nav-tabs" role="tablist" style='width:2000px'>
   {{#each ftplist}}
   <li role="presentation" class="mytab{{id}}">
@@ -14,7 +21,7 @@
 <div class="tab-content">
   
 </div>
-{{else}}
-  <h3>No Active FTP Connections</h3>
-{{/if}}
+</div>
+
+
 
