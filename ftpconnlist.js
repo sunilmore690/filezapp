@@ -5,8 +5,10 @@ var uid = require('uid');
 var FtpList = function (type) {
 	if (type == 'ftpsync') {
 		this.file = './ftpsync.json'
-	} else {
+	} else if(type == 'ftplist'){
 		this.file = './ftplist.json'
+	}else{
+		this.file = './ftphistory.json'
 	}
 }
 FtpList.prototype.add = function (obj, callback) {

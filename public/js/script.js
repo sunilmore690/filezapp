@@ -59,6 +59,7 @@ var fs = require('fs'),
   FtpSyncList = require('./ftpconnlist'),
   ftplist = new FtpList('ftplist'),
   ftpsynclist = new FtpSyncList('ftpsync'),
+  ftphistory = new FtpList('ftphistory'),
   FtpSync = require('./ftpsyncprocess'),
   async = require('async');
 global.ftpview = {};
@@ -87,8 +88,8 @@ var TemplateManager = {
     } else {
       var that = this;
       var template = fs.readFileSync('public/templates/' + id + '.hbs', 'utf-8');
-      console.log('---template', template)
-      that.templates[id] = template;
+      // console.log('---template', template)
+     that.templates[id] = template;
       callback(that.templates[id]);
 
     }
@@ -142,8 +143,9 @@ Handlebars.registerHelper("when", function (operand_1, operator, operand_2, opti
   else return options.inverse(this);
 });
 Handlebars.registerHelper("formattedDate", function (date) {
-  console.log('date', date)
-  return new Date(date).toLocaleString()
+  // console.log('date', date)
+  var date = new Date(date).toLocaleString();
+  return date.split(' ').join('')
   // return moment(date).format('MMMM Do YYYY, h:mm:ss a');
 })
 Handlebars.registerHelper('fileIcon', function (target) {
@@ -173,13 +175,13 @@ Handlebars.registerHelper('humanFileSize', function (bytes) {
   return bytes.toFixed(1) + ' ' + units[u];
 })
 var makeul = function (hierarchydata, classname) {
-  console.log('hierarchydata',hierarchydata)
+  console.log('hierarchydata', hierarchydata)
   var ul = '<ul id="tree1"';
   if (classname) {
     ul += ' class="' + classname + '"';
   }
   ul += '>\n';
- _.each(hierarchydata,function (value, key) {
+  _.each(hierarchydata, function (value, key) {
     if (Object.keys(hierarchydata[key]).length == 1 && hierarchydata[key].path) {
       ul += '<li class="folder">' + key + '\n';
       ul += '</li>\n';
@@ -492,10 +494,17 @@ var FtpListView = Backbone.View.extend({
   el: '.page',
 
   events: {
-    'click .closeTab': 'closeTab'
+    'click .closeTab': 'closeTab',
+    'click .history': 'showConnectionHistory'
   },
   initialize: function () {
 
+  },
+  showConnectionHistory: function () {
+    // var connectionhistory = new ConnectionHistoryView();
+    // connectionhistory.render();
+    window.App.view.connectionhistory.render();
+    return false;
   },
   closeTab: function (event) {
     var that = this;
@@ -526,16 +535,16 @@ var FtpListView = Backbone.View.extend({
       TemplateManager.get('ftp_list', function (template) {
         console.log('data template', template)
         console.log('template', template, list)
-        var template = Handlebars.compile(template);
+         var template = Handlebars.compile(template);
         var html = template({ ftplist: list });
         that.$el.html(html);
-        that.postRender(list,id);
+        that.postRender(list, id);
       })
     })
 
   },
-  postRender: function (list,id) {
-    console.log('id',id)
+  postRender: function (list, id) {
+    console.log('id', id)
     var that = this;
     var index = 1;
     async.eachSeries(list, function (ftp, callback) {
@@ -545,12 +554,12 @@ var FtpListView = Backbone.View.extend({
         console.log('render callback');
         callback();
       }).el);
-      if(id){
-         $('#' + id).addClass("in active");
-         $('.tabrole'+id).tab('show');
-      }else if (index == 1) {
+      if (id) {
+        $('#' + id).addClass("in active");
+        $('.tabrole' + id).tab('show');
+      } else if (index == 1) {
         $('#' + ftp.id).addClass("in active");
-        $('.tabrole'+ftp.id).tab('show');
+        $('.tabrole' + ftp.id).tab('show');
       }
       index += 1;
 
@@ -802,15 +811,25 @@ var HomeView = Backbone.View.extend({
     };
     this._modelBinder.bind(this.model, this.el, bindings);
   },
-  Login: function (e) {
+  Login:function(e){
+    this.login(this.model.attributes);
+    return false;
+  },
+  login: function (ftpobj,type) {
     var that = this;
-    myftp.connect(this.model.attributes, function (err, ftp) {
+    myftp.connect(ftpobj, function (err, ftp) {
       console.log('err', err)
       if (err) {
         window.App.flash('Something went wrong', 'error')
       } else {
-        ftplist.add(ftp, function (err,data1) {
+        ftplist.add(ftp, function (err, data1) {
           // console.log('data',data1)
+          if(!type){
+            console.log('addding history');
+            ftphistory.add(ftp,function(err3,dd){
+
+            })
+          }
           data = JSON.parse(JSON.stringify(data1))
           // App.router.currentView.render(data.id);
           that.model.clear();
@@ -822,19 +841,57 @@ var HomeView = Backbone.View.extend({
           var template = Handlebars.compile(liel);
           template = template(data);
           App.router.currentView.$el.find('.nav-tabs').append(template);
-          $('.tabrole'+data.id).tab('show');
+          $('.tabrole' + data.id).tab('show');
           App.router.currentView.$el.find('.tab-content').append(global.ftpview[data.id].render(function () {
             console.log('render callback');
             // callback();
             $('.ftpview').removeClass('in active');
-            $('#'+data.id).addClass('in active');
-          
+            $('#' + data.id).addClass('in active');
+
           }).el);
         })
 
       }
     })
     return false;
+  }
+});
+var ConnectionHistoryView = Backbone.View.extend({
+  // el: '',
+  initialize: function () {
+    // this._modelBinder = new Backbone.ModelBinder();
+
+  },
+  events: {
+    'click .connectftp': 'connectHistory'
+  },
+  render: function () {
+
+    var that = this;
+    ftphistory.getAll(function (err, historylist) {
+      if (err) {
+        window.App.flash('Something went wrong', 'error');
+      } else {
+        that.historylist = historylist;
+        TemplateManager.get('connectionhistory', function (template) {
+          var template = Handlebars.compile(template);
+          var html = template({historylist:historylist});
+          $('.historymodal').html(html);
+          $('.historymodal').modal('show');
+          // that.$el.find('.connectftp').on('click',function(event){
+          //   console.log('click event clicked')
+          //   that.connectHistory(event)
+          // })
+          return false;
+        })
+      }
+    })
+  },
+  connectHistory: function (event) {
+    console.log('Calling connect')
+    var id = $(event.currentTarget).data('id');
+    var ftpobj = _.findWhere(this.historylist,{id:id});
+    window.App.view.home.login(ftpobj || {},'history');
   }
 });
 
@@ -873,6 +930,7 @@ window.App.view.ftplist = new FtpListView();
 window.App.view.home = new HomeView();
 window.App.view.navbar = new NavBarView();
 window.App.view.ftpsync = new FtpSyncView();
+window.App.view.connectionhistory = new ConnectionHistoryView();
 window.App.setLoading = function (loading) {
   $('body').toggleClass('loading', loading);
 

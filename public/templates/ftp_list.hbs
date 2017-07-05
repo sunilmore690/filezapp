@@ -2,11 +2,12 @@
   
 {{else}}
 <h3 class="message">No Active FTP Connections</h3>
+ <span class="pull-right"><a href='#' class="history"><i class='fa fa-history'></i> Connection History</a></span>
 {{/if}}
 
 <div class="connectionlist {{#if ftplist.length }}{{else}}hide{{/if}}">
   <legend>FTP Connections</legend>
-
+  <span class="pull-right"><a href='#' class="history"><i class='fa fa-history'></i> Connection History</a></span>
 <div style='overflow-x:scroll' >
   <ul class="nav nav-tabs" role="tablist" style='width:2000px'>
   {{#each ftplist}}

@@ -1,0 +1,36 @@
+
+<div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Connection History</h4>
+        </div>
+        <div class="modal-body">
+            <table class="table striped " {{#if isMobile}}style='width:800px;' {{/if}} style="">
+    <thead>
+        <th>Host</th>
+        <th>User</th>
+        <th>Pass</th>
+        <th>Port</th>
+        <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each historylist}}
+        <tr>
+            <td>{{host}}</td>
+            <td>{{user}}</td>
+            <td>***********</td>
+            <td>{{port}}</td>
+            <td><a href="#" class="connectftp btn btn-xs btn-success" data-id='{{id}}'>connect</a></td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+        </div>
+       
+    </div>
+
+</div>
